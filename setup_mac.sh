@@ -3,10 +3,10 @@
 if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
     if ! command -v conda &> /dev/null
     then
-        echo "conda is not installed. Installing miniconda"
+        echo "conda没有安装, 正在安装conda"
 
         # Install conda
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
+        wget https://mirror.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-MacOSX-arm64.sh
 
         # Install conda
         bash Miniconda3-latest-MacOSX-arm64.sh -b -p $HOME/miniconda
@@ -15,7 +15,7 @@ if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
         export PATH="$HOME/miniconda/bin:$PATH"
 
     else
-        echo "conda is installed."
+        echo "conda已安装"
 
     fi
 
@@ -41,7 +41,7 @@ conda activate web-ui
 rm -rf stable-diffusion-webui
 
 # Clone the repo
-git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
+git clone https://gitclone.com/github.com/AUTOMATIC1111/stable-diffusion-webui.git
 
 # Enter the repo
 cd stable-diffusion-webui
@@ -53,47 +53,43 @@ echo "============================================="
 echo "============================================="
 
 # Prompt the user to ask if they've already installed the model
-echo "If you've already downloaded the model, you now have time to copy it yourself to stable-diffusion-webui/models/Stable-diffusion/"
-echo "If you haven't downloaded the model yet, you can enter n to downloaded the model from hugging face."
+echo "如果你已经下载了模型, 现在可以把模型文件移动到 stable-diffusion-webui/models/Stable-diffusion/"
+echo "如果你还没下载模型，可以输入n在OneDrive下载模型"
 while true; do
-    read -p "Have you already installed the model? (y/n) " yn
+    read -p "已经下载了模型吗? (y/n) " yn
     case $yn in
-        [Yy]* ) echo "Skipping model installation"; break;;
-        [Nn]* ) echo "Installing model"; 
+        [Yy]* ) echo "跳过模型下载"; break;;
+        [Nn]* ) echo "下载模型"; 
         # Prompt the user for their hugging face token and store it in a variable
-        echo "Register an account on huggingface.co and then create a token (read) on https://huggingface.co/settings/tokens"
-        echo "Also make sure to accept the disclaimer here: https://huggingface.co/CompVis/stable-diffusion-v-1-4-original"
-        read -p "Please enter your hugging face token: " hf_token
-        # Install the model
-        headertoken="Authorization: Bearer $hf_token"
-        curl -L -H "$headertoken" -o models/Stable-diffusion/sd-v1-4.ckpt https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt 
+        echo "复制这段链接到浏览器里来下载模型：
+        https://fancade-my.sharepoint.com/:u:/g/personal/maltmann_fancade_onmicrosoft_com/EWrI4OZzaVNBnkiNLuPtR9cBRKjWTxYICstvaziMo03MaQ?e=ljQWGk"
         break;;
-        * ) echo "Please answer yes or no.";;
+        * ) echo "请输入y或n.";;
     esac
 done
 
 # Clone required repos
-git clone https://github.com/CompVis/stable-diffusion.git repositories/stable-diffusion
+git clone https://gitclone.com/github.com/CompVis/stable-diffusion.git repositories/stable-diffusion
  
-git clone https://github.com/CompVis/taming-transformers.git repositories/taming-transformers
+git clone https://gitclone.com/github.com/CompVis/taming-transformers.git repositories/taming-transformers
 
-git clone https://github.com/sczhou/CodeFormer.git repositories/CodeFormer
+git clone https://gitclone.com/github.com/sczhou/CodeFormer.git repositories/CodeFormer
     
-git clone https://github.com/salesforce/BLIP.git repositories/BLIP
+git clone https://gitclone.com/github.com/salesforce/BLIP.git repositories/BLIP
 
-git clone https://github.com/Birch-san/k-diffusion repositories/k-diffusion
+git clone https://gitclone.com/github.com/Birch-san/k-diffusion repositories/k-diffusion
 
 # Before we continue, check if 1) the model is in place 2) the repos are cloned
 if ( [ -f "models/sd-v1-4.ckpt" ] || [ -f "models/Stable-diffusion/sd-v1-4.ckpt" ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
-    echo "All files are in place. Continuing installation."
+    echo "所有文件校验完成，开始安装"
 else
     echo "============================================="
     echo "====================ERROR===================="
     echo "============================================="
-    echo "The check for the models & required repositories has failed."
-    echo "Please check if the model is in place and the repos are cloned."
-    echo "You can find the model in stable-diffusion-webui/models/Stable-diffusion/sd-v1-4.ckpt"
-    echo "You can find the repos in stable-diffusion-webui/repositories/"
+    echo "模型/仓库校验失败"
+    echo "请检查模型是否存在，仓库是否克隆"
+    echo "你可以在这里找到模型：stable-diffusion-webui/models/Stable-diffusion/"
+    echo "你可以在这里找到仓库：stable-diffusion-webui/repositories/"
     echo "============================================="
     echo "====================ERROR===================="
     echo "============================================="
@@ -181,5 +177,3 @@ echo "============================================="
 
 # Run the web UI
 python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ESRGAN SCUNet
-
-
