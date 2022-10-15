@@ -80,7 +80,7 @@ git clone https://gitclone.com/github.com/salesforce/BLIP.git repositories/BLIP
 git clone https://gitclone.com/github.com/Birch-san/k-diffusion repositories/k-diffusion
 
 # Before we continue, check if 1) the model is in place 2) the repos are cloned
-if ( [ -f "models/sd-v1-4.ckpt" ] || [ -f "models/Stable-diffusion/sd-v1-4.ckpt" ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
+if ( [ -f "models/ "*.ckpt" " ] || [ -f "models/Stable-diffusion/ "*.ckpt" " ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
     echo "所有文件校验完成，开始安装"
 else
     echo "============================================="
@@ -97,11 +97,13 @@ else
 fi
 
 # Install dependencies
-pip install -r requirements.txt
+pip install diffusers basicsr gfpgan gradio numpy Pillow realesrgan torch omegaconf pytorch_lightning diffusers invisible-watermark scikit-image>=0.19 fonts font-roboto
 
-pip install git+https://github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1
+pip install timm==0.4.12 fairscale==0.4.4 piexif
 
-pip install git+https://github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
+pip install git+https://gitclone.com/github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1
+
+pip install git+https://gitclone.com/github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
 
 # Remove torch and all related packages
 pip uninstall torch torchvision torchaudio -y
