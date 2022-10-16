@@ -53,8 +53,15 @@ echo "============================================="
 echo "============================================="
 
 # Prompt the user to ask if they've already installed the model
-echo "如果你已经下载了模型, 现在可以把模型文件移动到 stable-diffusion-webui/models/Stable-diffusion/"
+<<<<<<< HEAD
+echo "如果你已经下载了模型, 现在可以把模型文件移动到
+stable-diffusion-webui/models/Stable-diffusion/"
+echo "如果你还没下载模型，可以输入n在OneDrive下载模型"
+=======
+echo "如果你已经下载了模型, 现在可以把模型文件移动到
+ stable-diffusion-webui/models/Stable-diffusion/"
 echo "如果你还没下载模型,可以输入n在OneDrive下载模型"
+>>>>>>> d8abdbacafa0adc296fb832c042a7a24d9014391
 while true; do
     read -p "已经下载了模型吗? (y/n) " yn
     case $yn in
@@ -63,6 +70,8 @@ while true; do
         # Prompt the user for their hugging face token and store it in a variable
         echo "复制这段链接到浏览器里来下载模型：
         https://fancade-my.sharepoint.com/:u:/g/personal/maltmann_fancade_onmicrosoft_com/EWrI4OZzaVNBnkiNLuPtR9cBRKjWTxYICstvaziMo03MaQ?e=ljQWGk"
+        echo "在下载完成后，手动将模型文件移动到
+        stable-diffusion-webui/models/Stable-diffusion/"
         break;;
         * ) echo "请输入y或n.";;
     esac
@@ -101,9 +110,9 @@ pip install diffusers basicsr gfpgan gradio numpy Pillow realesrgan torch omegac
 
 pip install timm==0.4.12 fairscale==0.4.4 piexif
 
-pip install git+https://gitclone.com/github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1
+pip install git+https://hub.fastgit.xyz/github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1
 
-pip install git+https://gitclone.com/github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
+pip install git+https://hub.fastgit.xyz/github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
 
 # Remove torch and all related packages
 pip uninstall torch torchvision torchaudio -y
