@@ -53,15 +53,11 @@ echo "============================================="
 echo "============================================="
 
 # Prompt the user to ask if they've already installed the model
-<<<<<<< HEAD
+
 echo "如果你已经下载了模型, 现在可以把模型文件移动到
 stable-diffusion-webui/models/Stable-diffusion/"
 echo "如果你还没下载模型，可以输入n在OneDrive下载模型"
-=======
-echo "如果你已经下载了模型, 现在可以把模型文件移动到
- stable-diffusion-webui/models/Stable-diffusion/"
-echo "如果你还没下载模型,可以输入n在OneDrive下载模型"
->>>>>>> d8abdbacafa0adc296fb832c042a7a24d9014391
+
 while true; do
     read -p "已经下载了模型吗? (y/n) " yn
     case $yn in
