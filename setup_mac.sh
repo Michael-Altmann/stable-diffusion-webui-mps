@@ -41,7 +41,7 @@ conda activate web-ui
 rm -rf stable-diffusion-webui
 
 # Clone the repo
-git clone https://hub.fastgit.xyz/github.com/AUTOMATIC1111/stable-diffusion-webui.git
+git clone https://hub.fastgit.xyz/AUTOMATIC1111/stable-diffusion-webui.git
 
 # Enter the repo
 cd stable-diffusion-webui
@@ -74,15 +74,15 @@ while true; do
 done
 
 # Clone required repos
-git clone https://gitclone.com/github.com/CompVis/stable-diffusion.git repositories/stable-diffusion
+git clone https://gitclone.com/CompVis/stable-diffusion.git repositories/stable-diffusion
  
-git clone https://gitclone.com/github.com/CompVis/taming-transformers.git repositories/taming-transformers
+git clone https://gitclone.com/CompVis/taming-transformers.git repositories/taming-transformers
 
-git clone https://gitclone.com/github.com/sczhou/CodeFormer.git repositories/CodeFormer
+git clone https://gitclone.com/sczhou/CodeFormer.git repositories/CodeFormer
     
-git clone https://gitclone.com/github.com/salesforce/BLIP.git repositories/BLIP
+git clone https://gitclone.com/salesforce/BLIP.git repositories/BLIP
 
-git clone https://gitclone.com/github.com/Birch-san/k-diffusion repositories/k-diffusion
+git clone https://gitclone.com/Birch-san/k-diffusion repositories/k-diffusion
 
 # Before we continue, check if 1) the model is in place 2) the repos are cloned
 if ( [ -f "models/ "*.ckpt" " ] || [ -f "models/Stable-diffusion/ "*.ckpt" " ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
@@ -106,9 +106,9 @@ pip install diffusers basicsr gfpgan gradio numpy Pillow realesrgan torch omegac
 
 pip install timm==0.4.12 fairscale==0.4.4 piexif
 
-pip install git+https://hub.fastgit.xyz/github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1
+pip install git+https://hub.fastgit.xyz/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1
 
-pip install git+https://hub.fastgit.xyz/github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
+pip install git+https://hub.fastgit.xyz/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
 
 # Remove torch and all related packages
 pip uninstall torch torchvision torchaudio -y
