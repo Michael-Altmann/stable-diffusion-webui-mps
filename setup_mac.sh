@@ -56,33 +56,30 @@ echo "============================================="
 
 echo "如果你已经下载了模型, 现在可以把模型文件移动到
 stable-diffusion-webui/models/Stable-diffusion/"
-echo "如果你还没下载模型，可以输入n在OneDrive下载模型"
+echo "如果没有下载模型，复制这段链接到浏览器里来下载模型：
+https://fancade-my.sharepoint.com/:u:/g/personal/maltmann_fancade_onmicrosoft_com/EWrI4OZzaVNBnkiNLuPtR9cBRKjWTxYICstvaziMo03MaQ?e=ljQWGk"
+echo "在下载完成后，手动将模型文件移动到
+stable-diffusion-webui/models/Stable-diffusion/"
 
 while true; do
-    read -p "已经下载了模型吗? (y/n) " yn
+    read -p "已经正确放置模型了吗? (y/n) " yn
     case $yn in
         [Yy]* ) echo "跳过模型下载"; break;;
-        [Nn]* ) echo "下载模型"; 
-        # Prompt the user for their hugging face token and store it in a variable
-        echo "复制这段链接到浏览器里来下载模型：
-        https://fancade-my.sharepoint.com/:u:/g/personal/maltmann_fancade_onmicrosoft_com/EWrI4OZzaVNBnkiNLuPtR9cBRKjWTxYICstvaziMo03MaQ?e=ljQWGk"
-        echo "在下载完成后，手动将模型文件移动到
-        stable-diffusion-webui/models/Stable-diffusion/"
-        break;;
+        [Nn]* ) echo "你可以随时通过OneDrive下载模型"; break;;
         * ) echo "请输入y或n.";;
     esac
 done
 
 # Clone required repos
-git clone https://gitclone.com/CompVis/stable-diffusion.git repositories/stable-diffusion
+git clone https://hub.fastgit.xyz/CompVis/stable-diffusion.git repositories/stable-diffusion
  
-git clone https://gitclone.com/CompVis/taming-transformers.git repositories/taming-transformers
+git clone https://hub.fastgit.xyz/CompVis/taming-transformers.git repositories/taming-transformers
 
-git clone https://gitclone.com/sczhou/CodeFormer.git repositories/CodeFormer
+git clone https://hub.fastgit.xyz/sczhou/CodeFormer.git repositories/CodeFormer
     
-git clone https://gitclone.com/salesforce/BLIP.git repositories/BLIP
+git clone https://hub.fastgit.xyz/salesforce/BLIP.git repositories/BLIP
 
-git clone https://gitclone.com/Birch-san/k-diffusion repositories/k-diffusion
+git clone https://hub.fastgit.xyz/Birch-san/k-diffusion repositories/k-diffusion
 
 # Before we continue, check if 1) the model is in place 2) the repos are cloned
 if ( [ -f "models/ "*.ckpt" " ] || [ -f "models/Stable-diffusion/ "*.ckpt" " ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
@@ -92,7 +89,7 @@ else
     echo "====================ERROR===================="
     echo "============================================="
     echo "模型/仓库校验失败"
-    echo "请检查模型是否存在，仓库是否克隆"
+    echo "请检查模型是否存在 && 仓库是否克隆"
     echo "你可以在这里找到模型: stable-diffusion-webui/models/Stable-diffusion/"
     echo "你可以在这里找到仓库: stable-diffusion-webui/repositories/"
     echo "============================================="
@@ -119,9 +116,6 @@ pip uninstall torch torchvision torchaudio -y
 # TODO: go back once fixed on PyTorch side
 pip install --pre torch==1.13.0.dev20220922 torchvision==0.14.0.dev20220924 -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps
 
-# Missing dependencie(s)
-pip install gdown fastapi psutil
-
 # Activate the MPS_FALLBACK conda environment variable
 conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1
 
@@ -134,11 +128,11 @@ if [ -z "$PYTORCH_ENABLE_MPS_FALLBACK" ]; then
     echo "============================================="
     echo "====================ERROR===================="
     echo "============================================="
-    echo "The PYTORCH_ENABLE_MPS_FALLBACK variable is not set."
-    echo "This means that the script will either fall back to CPU or fail."
-    echo "To fix this, please run the following command:"
+    echo "PYTORCH_ENABLE_MPS_FALLBACK 变量没有设置"
+    echo "这意味着将使用CPU运算"
+    echo "使用以下指令修复:"
     echo "conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1"
-    echo "Or, try running the script again."
+    echo "或者尝试重新运行脚本"
     echo "============================================="
     echo "====================ERROR===================="
     echo "============================================="
@@ -172,9 +166,9 @@ echo "============================================="
 echo "==============MORE INFORMATION==============="
 echo "============================================="
 echo "============================================="
-echo "If you want to run the web UI again, you can run the following command:"
+echo "如果想要再次运行Web UI, 输入以下指令:"
 echo "./stable-diffusion-webui/run_webui_mac.sh"
-echo "or"
+echo "或者"
 echo "cd stable-diffusion-webui && ./run_webui_mac.sh"
 echo "============================================="
 echo "============================================="
