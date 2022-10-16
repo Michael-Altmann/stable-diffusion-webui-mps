@@ -41,7 +41,7 @@ conda activate web-ui
 rm -rf stable-diffusion-webui
 
 # Clone the repo
-git clone https://gitclone.com/github.com/AUTOMATIC1111/stable-diffusion-webui.git
+git clone https://hub.fastgit.xyz/github.com/AUTOMATIC1111/stable-diffusion-webui.git
 
 # Enter the repo
 cd stable-diffusion-webui
@@ -54,7 +54,7 @@ echo "============================================="
 
 # Prompt the user to ask if they've already installed the model
 echo "如果你已经下载了模型, 现在可以把模型文件移动到 stable-diffusion-webui/models/Stable-diffusion/"
-echo "如果你还没下载模型，可以输入n在OneDrive下载模型"
+echo "如果你还没下载模型,可以输入n在OneDrive下载模型"
 while true; do
     read -p "已经下载了模型吗? (y/n) " yn
     case $yn in
@@ -88,8 +88,8 @@ else
     echo "============================================="
     echo "模型/仓库校验失败"
     echo "请检查模型是否存在，仓库是否克隆"
-    echo "你可以在这里找到模型：stable-diffusion-webui/models/Stable-diffusion/"
-    echo "你可以在这里找到仓库：stable-diffusion-webui/repositories/"
+    echo "你可以在这里找到模型: stable-diffusion-webui/models/Stable-diffusion/"
+    echo "你可以在这里找到仓库: stable-diffusion-webui/repositories/"
     echo "============================================="
     echo "====================ERROR===================="
     echo "============================================="
