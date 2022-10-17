@@ -5,13 +5,13 @@ if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
     then
         echo "conda没有安装, 正在安装conda"
 
-        # Install conda
+        # 从清华镜像源安装miniconda
         wget https://mirror.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-MacOSX-arm64.sh
 
-        # Install conda
+        # 安装miniconda
         bash Miniconda3-latest-MacOSX-arm64.sh -b -p $HOME/miniconda
 
-        # Add conda to path
+        # 添加conda到环境变量
         export PATH="$HOME/miniconda/bin:$PATH"
 
     else
@@ -19,31 +19,31 @@ if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
 
     fi
 
-    # Initialize conda
+    # 初始化conda
     conda init
 
-    # Rerun the shell script with a new shell (required to apply conda environment if conda init was run for the first time)
+    # 在新的Shell里重新运行脚本 (因为第一次配置conda环境需要重启才能生效)
     exec -c bash -c "NOT_FIRST_SDSETUP_RUN=1 \"$0\""
 fi
 
 export -n NOT_FIRST_SDSETUP_RUN
 
-# Remove previous conda environment
+# 移除之前的conda虚拟环境
 conda remove -n web-ui --all
 
-# Create conda environment
+# 创建一个新的conda虚拟环境
 conda create -n web-ui python=3.10
 
-# Activate conda environment
+# 激活虚拟环境
 conda activate web-ui
 
-# Remove previous git repository
+# 移除之前的git仓库
 rm -rf stable-diffusion-webui
 
-# Clone the repo
+# 从GitHub镜像站克隆仓库 （这一步有问题，git指令无法使用）
 git clone https://hub.fastgit.xyz/AUTOMATIC1111/stable-diffusion-webui.git
 
-# Enter the repo
+# 进入仓库目录
 cd stable-diffusion-webui
 
 echo "============================================="
@@ -52,7 +52,7 @@ echo "===========STABLE DIFFUSION MODEL============"
 echo "============================================="
 echo "============================================="
 
-# Prompt the user to ask if they've already installed the model
+# 询问用户是否已安装模型 （如果用户选择下载，需要将下载得到的model.ckpt文件手动挪到文件夹里，如果可能：直接提取文件到目标文件夹。目前OneDrive还不支持直链提取。）
 
 echo "如果你已经下载了模型, 现在可以把模型文件移动到
 stable-diffusion-webui/models/Stable-diffusion/"
@@ -70,7 +70,7 @@ while true; do
     esac
 done
 
-# Clone required repos
+# 从GitHub镜像站克隆需要的仓库 （这一步同样有问题）
 git clone https://hub.fastgit.xyz/CompVis/stable-diffusion.git repositories/stable-diffusion
  
 git clone https://hub.fastgit.xyz/CompVis/taming-transformers.git repositories/taming-transformers
@@ -81,8 +81,11 @@ git clone https://hub.fastgit.xyz/salesforce/BLIP.git repositories/BLIP
 
 git clone https://hub.fastgit.xyz/Birch-san/k-diffusion repositories/k-diffusion
 
-# Before we continue, check if 1) the model is in place 2) the repos are cloned
+# 在继续之前，检查: (1)是否安装了模型 (2)是否克隆了仓库
+
 if ( [ -f "models/ "*.ckpt" " ] || [ -f "models/Stable-diffusion/ "*.ckpt" " ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
+# 这里要实现的功能是，检查models 或 models/stable-diffusion中是否有后缀名为.ckpt的文件，同时在repositries中是否有stable-diffuion等四个仓库。 这段中对.ckpt文件的筛选有问题。
+
     echo "所有文件校验完成，开始安装"
 else
     echo "============================================="
@@ -98,7 +101,7 @@ else
     exit 1
 fi
 
-# Install dependencies
+# 安装依赖
 pip install diffusers basicsr gfpgan gradio numpy Pillow realesrgan torch omegaconf pytorch_lightning diffusers invisible-watermark scikit-image>=0.19 fonts font-roboto
 
 pip install timm==0.4.12 fairscale==0.4.4 piexif
@@ -107,23 +110,24 @@ pip install git+https://hub.fastgit.xyz/openai/CLIP.git@d50d76daa670286dd6cacf3b
 
 pip install git+https://hub.fastgit.xyz/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
 
-# Remove torch and all related packages
+# 移除torch和所有相关的包
 pip uninstall torch torchvision torchaudio -y
 
-# Normally, we would install the latest nightly build of PyTorch here,
-# But there's currently a performance regression in the latest nightly releases.
-# Therefore, we're going to use this old version which doesn't have it.
+# 一般情况下应该安装最新的Nightly版本,
+# 但是现在最新版本有性能问题.
+# 因此会使用老版本.
 # TODO: go back once fixed on PyTorch side
+
 pip install --pre torch==1.13.0.dev20220922 torchvision==0.14.0.dev20220924 -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps
 
-# Activate the MPS_FALLBACK conda environment variable
+# 激活MPS_FALLBACK conda环境变量
 conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1
 
-# We need to reactivate the conda environment for the variable to take effect
+# 重启conda环境使环境变量生效
 conda deactivate
 conda activate web-ui
 
-# Check if the config var is set
+# 检查配置变量是否成功
 if [ -z "$PYTORCH_ENABLE_MPS_FALLBACK" ]; then
     echo "============================================="
     echo "====================ERROR===================="
@@ -139,7 +143,7 @@ if [ -z "$PYTORCH_ENABLE_MPS_FALLBACK" ]; then
     exit 1
 fi
 
-# Create a shell script to run the web ui
+# 创建一个shell脚本运行Web UI
 echo "#!/usr/bin/env bash -l
 
 # This should not be needed since it's configured during installation, but might as well have it here.
@@ -158,7 +162,7 @@ python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ES
 conda deactivate
 " > run_webui_mac.sh
 
-# Give run permissions to the shell script
+# 给予脚本执行权限
 chmod +x run_webui_mac.sh
 
 echo "============================================="
@@ -176,5 +180,5 @@ echo "============================================="
 echo "============================================="
 
 
-# Run the web UI
+# 运行Web UI
 python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ESRGAN SCUNet
