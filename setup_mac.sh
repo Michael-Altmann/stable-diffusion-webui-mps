@@ -1,4 +1,28 @@
-#!/usr/bin/env bash -l
+#!/usr/bin/env bash
+
+logi() { printf "[\033[94mINFO\033[0m]"; for i in "$@"; do printf "%s" "$i"; done; printf "\n"; }
+logw() { printf "[\033[93mWARN\033[0m]"; for i in "$@"; do printf "%s" "$i"; done; printf "\n"; }
+loge() { printf "[\033[91mERROR\033[0m]"; for i in "$@"; do printf "%s" "$i"; done; printf "\n"; exit 1; }
+
+# Pre defined
+#GIT_MIRROR="https://hub.fastgit.xyz"
+#PIP_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
+if [ -z ${GIT_MIRROR} ]; then
+    GIT_MIRROR="https://github.com"
+fi
+
+# Pre detect 
+for i in "uname" "git" "python3"; do
+    if ! command -v $i &> /dev/null; then
+        loge "uname command does not exist"
+    fi
+done
+arch=`uname -m`
+ostype=`uname -s`
+
+if [ "$ostype" = "Darwin" ]; then
+    ostype=MacOSX
+fi
 
 if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
     if ! command -v conda &> /dev/null
@@ -6,42 +30,46 @@ if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
         echo "conda没有安装, 正在安装conda"
 
         # 从清华镜像源安装miniconda
-        wget https://mirror.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-MacOSX-arm64.sh
+        # wget https://mirror.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-$ostype-$arch.sh
 
         # 安装miniconda
-        bash Miniconda3-latest-MacOSX-arm64.sh -b -p $HOME/miniconda
+        bash Miniconda3-latest-$ostype-$arch.sh -b -p $HOME/miniconda
 
         # 添加conda到环境变量
-        export PATH="$HOME/miniconda/bin:$PATH"
+        export PATH="$PATH:$HOME/miniconda/bin"
+        printf "\nexport PATH=\$PATH:\$HOME/miniconda/bin\n" >> $HOME/.bashrc
 
     else
         echo "conda已安装"
-
+        # 初始化conda
+        conda init
     fi
-
-    # 初始化conda
-    conda init
-
+		
     # 在新的Shell里重新运行脚本 (因为第一次配置conda环境需要重启才能生效)
-    exec -c bash -c "NOT_FIRST_SDSETUP_RUN=1 \"$0\""
+    exec bash -c "NOT_FIRST_SDSETUP_RUN=1 $0"
 fi
 
 export -n NOT_FIRST_SDSETUP_RUN
+if ! command -v conda ;then
+    export PATH="$PATH:$HOME/miniconda/bin"
+fi
 
 # 移除之前的conda虚拟环境
-conda remove -n web-ui --all
+conda remove -n web-ui --all -y
 
 # 创建一个新的conda虚拟环境
-conda create -n web-ui python=3.10
+conda create -n web-ui python=3.10 -y
+
+source $HOME/miniconda/etc/profile.d/conda.sh
 
 # 激活虚拟环境
 conda activate web-ui
-
+ 
 # 移除之前的git仓库
-rm -rf stable-diffusion-webui
+#rm -rf stable-diffusion-webui
 
 # 从GitHub镜像站克隆仓库 （这一步有问题，git指令无法使用）
-git clone https://hub.fastgit.xyz/AUTOMATIC1111/stable-diffusion-webui.git
+#git clone "$GIT_MIRROR/AUTOMATIC1111/stable-diffusion-webui"
 
 # 进入仓库目录
 cd stable-diffusion-webui
@@ -54,12 +82,14 @@ echo "============================================="
 
 # 询问用户是否已安装模型 （如果用户选择下载，需要将下载得到的model.ckpt文件手动挪到文件夹里，如果可能：直接提取文件到目标文件夹。目前OneDrive还不支持直链提取。）
 
-echo "如果你已经下载了模型, 现在可以把模型文件移动到
-stable-diffusion-webui/models/Stable-diffusion/"
-echo "如果没有下载模型，复制这段链接到浏览器里来下载模型：
-https://fancade-my.sharepoint.com/:u:/g/personal/maltmann_fancade_onmicrosoft_com/EWrI4OZzaVNBnkiNLuPtR9cBRKjWTxYICstvaziMo03MaQ?e=ljQWGk"
-echo "在下载完成后，手动将模型文件移动到
-stable-diffusion-webui/models/Stable-diffusion/"
+cat << EOF
+如果你已经下载了模型, 现在可以把模型文件移动到
+stable-diffusion-webui/models/Stable-diffusion/
+如果没有下载模型，复制这段链接到浏览器里来下载模型：
+https://fancade-my.sharepoint.com/:u:/g/personal/maltmann_fancade_onmicrosoft_com/EWrI4OZzaVNBnkiNLuPtR9cBRKjWTxYICstvaziMo03MaQ?e=ljQWGk
+echo 在下载完成后，手动将模型文件移动到
+stable-diffusion-webui/models/Stable-diffusion/
+EOF
 
 while true; do
     read -p "已经正确放置模型了吗? (y/n) " yn
@@ -70,20 +100,28 @@ while true; do
     esac
 done
 
-# 从GitHub镜像站克隆需要的仓库 （这一步同样有问题）
-git clone https://hub.fastgit.xyz/CompVis/stable-diffusion.git repositories/stable-diffusion
+# 从GitHub镜像站克隆需要的仓库 （这一步同样有问题）   浅克隆可以避免克隆整个仓库，只把对应分支的文件克隆下来
+#git clone "$GIT_MIRROR/CompVis/stable-diffusion" "repositories/stable-diffusion" --depth=1
  
-git clone https://hub.fastgit.xyz/CompVis/taming-transformers.git repositories/taming-transformers
+#git clone "$GIT_MIRROR/CompVis/taming-transformers" "repositories/taming-transformers" --depth=1
 
-git clone https://hub.fastgit.xyz/sczhou/CodeFormer.git repositories/CodeFormer
+#git clone "$GIT_MIRROR/sczhou/CodeFormer" "repositories/CodeFormer" --depth=1
     
-git clone https://hub.fastgit.xyz/salesforce/BLIP.git repositories/BLIP
+#git clone "$GIT_MIRROR/salesforce/BLIP" "repositories/BLIP" --depth=1
 
-git clone https://hub.fastgit.xyz/Birch-san/k-diffusion repositories/k-diffusion
+#git clone "$GIT_MIRROR/Birch-san/k-diffusion" "repositories/k-diffusion" --depth=1
 
 # 在继续之前，检查: (1)是否安装了模型 (2)是否克隆了仓库
 
-if ( [ -f "models/ "*.ckpt" " ] || [ -f "models/Stable-diffusion/ "*.ckpt" " ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
+for i in "repositories/stable-diffusion" "repositories/taming-transformers" "repositories/CodeFormer" "repositories/BLIP"; do
+    if [ ! -d "$i" ]; then
+        loge "$i repository does not exist !"
+    fi
+done
+ckpt_list=`find "models/" -name "\*.ckpt"`
+if [ ! -z "$ckpt_list" ]; then
+    # logw "models dir have no ckpt files"
+#if ( [ -f "models/ "*.ckpt" " ] || [ -f "models/Stable-diffusion/ "*.ckpt" " ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
 # 这里要实现的功能是，检查models 或 models/stable-diffusion中是否有后缀名为.ckpt的文件，同时在repositries中是否有stable-diffuion等四个仓库。 这段中对.ckpt文件的筛选有问题。
 
     echo "所有文件校验完成，开始安装"
@@ -98,17 +136,15 @@ else
     echo "============================================="
     echo "====================ERROR===================="
     echo "============================================="
-    exit 1
+    # exit 1
 fi
 
 # 安装依赖
-pip install diffusers basicsr gfpgan gradio numpy Pillow realesrgan torch omegaconf pytorch_lightning diffusers invisible-watermark scikit-image>=0.19 fonts font-roboto
-
-pip install timm==0.4.12 fairscale==0.4.4 piexif
-
-pip install git+https://hub.fastgit.xyz/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1
-
-pip install git+https://hub.fastgit.xyz/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379
+if [ -z "$PIP_MIRROR" ]; then
+    pip install -r "requirements.txt"
+else
+    pip install -r "requirements_mirror.txt" -i "$PIP_MIRROR"
+fi 
 
 # 移除torch和所有相关的包
 pip uninstall torch torchvision torchaudio -y
@@ -121,11 +157,11 @@ pip uninstall torch torchvision torchaudio -y
 pip install --pre torch==1.13.0.dev20220922 torchvision==0.14.0.dev20220924 -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps
 
 # 激活MPS_FALLBACK conda环境变量
-conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1
+conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1 -y
 
 # 重启conda环境使环境变量生效
-conda deactivate
-conda activate web-ui
+conda deactivate -y
+conda activate web-ui -y
 
 # 检查配置变量是否成功
 if [ -z "$PYTORCH_ENABLE_MPS_FALLBACK" ]; then
@@ -144,7 +180,8 @@ if [ -z "$PYTORCH_ENABLE_MPS_FALLBACK" ]; then
 fi
 
 # 创建一个shell脚本运行Web UI
-echo "#!/usr/bin/env bash -l
+cat << EOF > run_webui_mac.sh
+#!/usr/bin/env bash
 
 # This should not be needed since it's configured during installation, but might as well have it here.
 conda env config vars set PYTORCH_ENABLE_MPS_FALLBACK=1
@@ -160,7 +197,7 @@ python webui.py --precision full --no-half --use-cpu GFPGAN CodeFormer BSRGAN ES
 
 # Deactivate conda environment
 conda deactivate
-" > run_webui_mac.sh
+EOF
 
 # 给予脚本执行权限
 chmod +x run_webui_mac.sh
