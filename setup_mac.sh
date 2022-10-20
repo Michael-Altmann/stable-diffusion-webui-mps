@@ -68,8 +68,8 @@ conda activate web-ui
 # 移除之前的git仓库
 #rm -rf stable-diffusion-webui
 
-# 从GitHub镜像站克隆仓库 （这一步有问题，git指令无法使用）
-#git clone "$GIT_MIRROR/AUTOMATIC1111/stable-diffusion-webui"
+# 从GitHub镜像站克隆仓库
+git clone "$GIT_MIRROR/AUTOMATIC1111/stable-diffusion-webui"
 
 # 进入仓库目录
 cd stable-diffusion-webui
