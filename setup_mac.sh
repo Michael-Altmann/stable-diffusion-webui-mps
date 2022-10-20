@@ -4,7 +4,7 @@ logi() { printf "[\033[94mINFO\033[0m]"; for i in "$@"; do printf "%s" "$i"; don
 logw() { printf "[\033[93mWARN\033[0m]"; for i in "$@"; do printf "%s" "$i"; done; printf "\n"; }
 loge() { printf "[\033[91mERROR\033[0m]"; for i in "$@"; do printf "%s" "$i"; done; printf "\n"; exit 1; }
 
-cd ~/Documents/
+cd ~/Documents
 
 # Pre defined
 #GIT_MIRROR="https://hub.fastgit.xyz"
@@ -67,7 +67,7 @@ source $HOME/miniconda/etc/profile.d/conda.sh
 # 激活虚拟环境
 conda activate web-ui
 
-cd ~/Documents/
+cd ~/Documents
  
 # 移除之前的git仓库
 rm -rf stable-diffusion-webui
