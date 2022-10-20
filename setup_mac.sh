@@ -66,7 +66,9 @@ source $HOME/miniconda/etc/profile.d/conda.sh
 conda activate web-ui
  
 # 移除之前的git仓库
-#rm -rf stable-diffusion-webui
+rm -rf stable-diffusion-webui
+
+cd Document
 
 # 从GitHub镜像站克隆仓库
 git clone "$GIT_MIRROR/AUTOMATIC1111/stable-diffusion-webui"
