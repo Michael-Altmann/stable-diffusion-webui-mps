@@ -4,6 +4,8 @@ logi() { printf "[\033[94mINFO\033[0m]"; for i in "$@"; do printf "%s" "$i"; don
 logw() { printf "[\033[93mWARN\033[0m]"; for i in "$@"; do printf "%s" "$i"; done; printf "\n"; }
 loge() { printf "[\033[91mERROR\033[0m]"; for i in "$@"; do printf "%s" "$i"; done; printf "\n"; exit 1; }
 
+cd ~/Document
+
 # Pre defined
 #GIT_MIRROR="https://hub.fastgit.xyz"
 #PIP_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
@@ -67,8 +69,6 @@ conda activate web-ui
  
 # 移除之前的git仓库
 rm -rf stable-diffusion-webui
-
-cd Document
 
 # 从GitHub镜像站克隆仓库
 git clone "$GIT_MIRROR/AUTOMATIC1111/stable-diffusion-webui"
