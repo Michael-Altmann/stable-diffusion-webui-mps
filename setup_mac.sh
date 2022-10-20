@@ -7,6 +7,7 @@ loge() { printf "[\033[91mERROR\033[0m]"; for i in "$@"; do printf "%s" "$i"; do
 # Pre defined
 GIT_MIRROR="https://hub.fastgit.xyz"
 PIP_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
+
 if [ -z ${GIT_MIRROR} ]; then
     GIT_MIRROR="https://github.com"
 fi
@@ -64,8 +65,6 @@ source $HOME/miniconda/etc/profile.d/conda.sh
 
 # 激活虚拟环境
 conda activate web-ui
-
-cd ~/Documents
  
 # 移除之前的git仓库
 rm -rf stable-diffusion-webui
@@ -141,6 +140,9 @@ else
 fi
 
 # 安装依赖
+
+cd ~/
+
 if [ -z "$PIP_MIRROR" ]; then
     pip install -r "requirements.txt"
 else
