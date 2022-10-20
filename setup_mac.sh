@@ -66,6 +66,8 @@ source $HOME/miniconda/etc/profile.d/conda.sh
 
 # 激活虚拟环境
 conda activate web-ui
+
+cd ~/Document
  
 # 移除之前的git仓库
 rm -rf stable-diffusion-webui
@@ -103,15 +105,15 @@ while true; do
 done
 
 # 从GitHub镜像站克隆需要的仓库 （这一步同样有问题）   浅克隆可以避免克隆整个仓库，只把对应分支的文件克隆下来
-#git clone "$GIT_MIRROR/CompVis/stable-diffusion" "repositories/stable-diffusion" --depth=1
+git clone "$GIT_MIRROR/CompVis/stable-diffusion" "repositories/stable-diffusion" --depth=1
  
-#git clone "$GIT_MIRROR/CompVis/taming-transformers" "repositories/taming-transformers" --depth=1
+git clone "$GIT_MIRROR/CompVis/taming-transformers" "repositories/taming-transformers" --depth=1
 
-#git clone "$GIT_MIRROR/sczhou/CodeFormer" "repositories/CodeFormer" --depth=1
+git clone "$GIT_MIRROR/sczhou/CodeFormer" "repositories/CodeFormer" --depth=1
     
-#git clone "$GIT_MIRROR/salesforce/BLIP" "repositories/BLIP" --depth=1
+git clone "$GIT_MIRROR/salesforce/BLIP" "repositories/BLIP" --depth=1
 
-#git clone "$GIT_MIRROR/Birch-san/k-diffusion" "repositories/k-diffusion" --depth=1
+git clone "$GIT_MIRROR/Birch-san/k-diffusion" "repositories/k-diffusion" --depth=1
 
 # 在继续之前，检查: (1)是否安装了模型 (2)是否克隆了仓库
 
@@ -122,8 +124,7 @@ for i in "repositories/stable-diffusion" "repositories/taming-transformers" "rep
 done
 ckpt_list=`find "models/" -name "\*.ckpt"`
 if [ ! -z "$ckpt_list" ]; then
-    # logw "models dir have no ckpt files"
-#if ( [ -f "models/ "*.ckpt" " ] || [ -f "models/Stable-diffusion/ "*.ckpt" " ] ) && [ -d "repositories/stable-diffusion" ] && [ -d "repositories/taming-transformers" ] && [ -d "repositories/CodeFormer" ] && [ -d "repositories/BLIP" ]; then
+     logw "models dir have no ckpt files"
 # 这里要实现的功能是，检查models 或 models/stable-diffusion中是否有后缀名为.ckpt的文件，同时在repositries中是否有stable-diffuion等四个仓库。 这段中对.ckpt文件的筛选有问题。
 
     echo "所有文件校验完成，开始安装"
