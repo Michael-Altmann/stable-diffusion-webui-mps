@@ -5,8 +5,8 @@ logw() { printf "[\033[93mWARN\033[0m]"; for i in "$@"; do printf "%s" "$i"; don
 loge() { printf "[\033[91mERROR\033[0m]"; for i in "$@"; do printf "%s" "$i"; done; printf "\n"; exit 1; }
 
 # Pre defined
-#GIT_MIRROR="https://hub.fastgit.xyz"
-#PIP_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
+GIT_MIRROR="https://hub.fastgit.xyz"
+PIP_MIRROR="https://pypi.tuna.tsinghua.edu.cn/simple"
 if [ -z ${GIT_MIRROR} ]; then
     GIT_MIRROR="https://github.com"
 fi
