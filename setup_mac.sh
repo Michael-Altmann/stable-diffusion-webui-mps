@@ -31,7 +31,7 @@ if [ -z ${NOT_FIRST_SDSETUP_RUN} ]; then
         echo "conda没有安装, 正在安装conda"
 
         # 从清华镜像源安装miniconda
-        # wget https://mirror.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-$ostype-$arch.sh
+        wget https://mirror.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-$ostype-$arch.sh
 
         # 安装miniconda
         bash Miniconda3-latest-$ostype-$arch.sh -b -p $HOME/miniconda
@@ -140,8 +140,6 @@ else
 fi
 
 # 安装依赖
-
-cd ~/
 
 if [ -z "$PIP_MIRROR" ]; then
     pip install -r "requirements.txt"
